@@ -2,22 +2,14 @@ pipeline {
     agent any
 
     stages {
-
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Build') {
             steps {
                 sh 'mvn clean package'
             }
         }
-
-        stage('Archive') {
+        stage('Deploy to Tomcat') {
             steps {
-                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                sh 'sudo cp target/petclinic-0.0.1-SNAPSHOT.jar /opt/tomcat/webapps/'
             }
         }
     }
