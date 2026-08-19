@@ -10,7 +10,14 @@ pipeline {
         
         stage('Deploy') {
             steps {
+                // Copy the latest jar to the deployment directory
                 sh 'cp target/petclinic-0.0.1-SNAPSHOT.jar /home/ubuntu/webapps/'
+                
+                // Stop any existing app running on port 8080 (if applicable)
+                sh 'pkill -f petclinic-0.0.1-SNAPSHOT.jar || true'
+                
+                // Start the new app in the background without blocking Jenkins
+                sh 'BUILD_ID=dontKillMe nohup java -jar /home/ubuntu/webapps/petclinic-0.0.1-SNAPSHOT.jar > /home/ubuntu/webapps/app.log 2>&1 &'
             }
         }
     }
